@@ -15,6 +15,10 @@ public class NorthWindTradersApplication {
 
         ApplicationContext ac = SpringApplication.run(NorthWindTradersApplication.class, args);
         log.info(String.valueOf(ac));
+
+        for (String name : ac.getBeanDefinitionNames()) {
+            System.out.println(name);
+        }
     }
 
 }
