@@ -32,8 +32,8 @@ public class CategoryDaoImpl implements CategoryDao {
                 while (resultSet.next()) {
 
                     Category category = new Category();
-                    category.setCategoryId(resultSet.getInt("id"));
-                    category.setCategoryName(resultSet.getString("name"));
+                    category.setCategoryId(resultSet.getInt("categoryID"));
+                    category.setCategoryName(resultSet.getString("categoryName"));
                     categories.add(category);
                 }
             }
@@ -53,8 +53,8 @@ public class CategoryDaoImpl implements CategoryDao {
             try (var resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
                     Category category = new Category();
-                    category.setCategoryId(resultSet.getInt("id"));
-                    category.setCategoryName(resultSet.getString("name"));
+                    category.setCategoryId(resultSet.getInt("categoryID"));
+                    category.setCategoryName(resultSet.getString("categoryName"));
                     return Optional.of(category);
                 }
             }
@@ -63,6 +63,46 @@ public class CategoryDaoImpl implements CategoryDao {
         }
         return Optional.empty();
 
+    }
+
+    @Override
+    public boolean addCategory(Category category) {
+
+        try (Connection connection = dataSource.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO categories (CategoryName) VALUES (?)")) {
+            preparedStatement.setString(1, category.getCategoryName());
+            return preparedStatement.executeUpdate() > 0;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean updateCategory(int id, Category category) {
+
+        try (Connection connection = dataSource.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement("UPDATE categories SET CategoryName = ? WHERE CategoryID = ?")) {
+            preparedStatement.setString(1, category.getCategoryName());
+            preparedStatement.setInt(2, id);
+            return preparedStatement.executeUpdate() > 0;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean deleteCategory(int id) {
+
+            try (Connection connection = dataSource.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM categories WHERE CategoryID = ?")) {
+                preparedStatement.setInt(1, id);
+                return preparedStatement.executeUpdate() > 0;
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+
+            return false;
     }
 
 }

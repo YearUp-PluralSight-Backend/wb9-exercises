@@ -9,4 +9,7 @@ public interface CategoryDao {
 
     List<Category> getAllCategories();
     Optional<Category> getCategoryById(int id);
+    boolean addCategory(Category category);
+    boolean updateCategory(int id, Category category);
+    boolean deleteCategory(int id);
 }

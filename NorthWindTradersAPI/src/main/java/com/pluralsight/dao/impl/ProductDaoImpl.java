@@ -33,10 +33,10 @@ public class ProductDaoImpl implements ProductDao {
                 while (resultSet.next()) {
 
                     Product product = new Product();
-                    product.setProductId(resultSet.getInt("id"));
-                    product.setProductName(resultSet.getString("name"));
-                    product.setCategoryId(resultSet.getInt("category_id"));
-                    product.setUnitPrice(resultSet.getDouble("price"));
+                    product.setProductId(resultSet.getInt("ProductID"));
+                    product.setProductName(resultSet.getString("ProductName"));
+                    product.setCategoryId(resultSet.getInt("CategoryID"));
+                    product.setUnitPrice(resultSet.getDouble("UnitPrice"));
                     products.add(product);
                 }
             }
@@ -57,10 +57,10 @@ public class ProductDaoImpl implements ProductDao {
                 if (resultSet.next()) {
 
                     Product product = new Product();
-                    product.setProductId(resultSet.getInt("id"));
-                    product.setProductName(resultSet.getString("name"));
-                    product.setCategoryId(resultSet.getInt("category_id"));
-                    product.setUnitPrice(resultSet.getDouble("price"));
+                    product.setProductId(resultSet.getInt("ProductID"));
+                    product.setProductName(resultSet.getString("ProductName"));
+                    product.setCategoryId(resultSet.getInt("CategoryID"));
+                    product.setUnitPrice(resultSet.getDouble("UnitPrice"));
                     return Optional.of(product);
                 }
             }
@@ -69,5 +69,51 @@ public class ProductDaoImpl implements ProductDao {
         }
 
         return Optional.empty();
+    }
+
+    @Override
+    public boolean addProduct(Product product) {
+
+            try(Connection connection = dataSource.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO products (ProductName, CategoryID, UnitPrice) VALUES (?, ?, ?)")) {
+                preparedStatement.setString(1, product.getProductName());
+                preparedStatement.setInt(2, product.getCategoryId());
+                preparedStatement.setDouble(3, product.getUnitPrice());
+                return preparedStatement.executeUpdate() > 0;
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+
+            return false;
+    }
+
+    @Override
+    public boolean updateProduct(int id, Product product) {
+
+        try(Connection connection = dataSource.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement("UPDATE products SET ProductName = ?, CategoryID = ?, UnitPrice = ? WHERE ProductID = ?")) {
+
+            preparedStatement.setString(1, product.getProductName());
+            preparedStatement.setInt(2, product.getCategoryId());
+            preparedStatement.setDouble(3, product.getUnitPrice());
+            preparedStatement.setInt(4, id);
+            return preparedStatement.executeUpdate() > 0;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean deleteProduct(int id) {
+
+            try(Connection connection = dataSource.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM products WHERE ProductID = ?")) {
+
+                preparedStatement.setInt(1, id);
+                return preparedStatement.executeUpdate() > 0;
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+
+            return false;
     }
 }

@@ -4,11 +4,9 @@ package com.pluralsight.controller;
 import com.pluralsight.dao.impl.ProductDaoImpl;
 import com.pluralsight.models.Product;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.nio.file.Path;
 import java.util.List;
 
 
@@ -28,8 +26,23 @@ public class ProductController {
         return productDao.getAllProducts();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/get/{id}")
     public Product getProductById(@PathVariable int id) {
         return productDao.getProductById(id).isPresent() ? productDao.getProductById(id).get() : null;
+    }
+
+    @PostMapping("/add")
+    public Boolean addProduct(@RequestBody Product product) {
+        return productDao.addProduct(product);
+    }
+
+    @PutMapping("/update/{id}")
+    public Boolean updateProduct(@PathVariable int id, @RequestBody Product product) {
+        return productDao.updateProduct(id, product);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public Boolean deleteProduct(@PathVariable int id) {
+        return productDao.deleteProduct(id);
     }
 }
